@@ -167,6 +167,7 @@ public class PCBuilderController implements Initializable {
     @FXML
     private void onStartOverClick() throws FileNotFoundException {
         buildTotalPrice = 0;
+        auxPane.setVisible(false);
         partLabel.setText("Central Processing Unit (CPU)");
         endPane.setVisible(false);
         onStartClick();
@@ -316,8 +317,9 @@ public class PCBuilderController implements Initializable {
         while (s.hasNextLine()) {
             String line = s.nextLine();
             String[] specs = line.split(",");
+            System.out.println(compatible);
             if(compatible.equals("Yes")){
-                if(specs[5].equals("M.2-2280\n"));
+                if(specs[5].equals("M.2-2280")) listStorage.add(line);
             }
             if(specs[5].equals("2.5")||specs[5].equals("3.5"))listStorage.add(line);
         }
