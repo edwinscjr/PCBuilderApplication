@@ -16,111 +16,17 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-//class Component{
-//    String specs;
-//    Component left, right;
-//
-//    public Component(String specs){
-//        this.specs = specs;
-//        this.left = null;
-//        this.right = null;
-//    }
-//}
-//class TreeCPU {
-//    Component rootCPU;
-//    TreeCPU() {
-//        rootCPU = null;
-//    }
-//    private Component recursive(Component current, String specs) {
-//        if (current == null) {
-//            return new Component(specs);
-//        }
-//        if (specs.compareTo(current.specs) < 0) {
-//            current.left = recursive(current.left, specs);
-//        } else if (specs.compareTo(current.specs) > 0) {
-//            current.right = recursive(current.right, specs);
-//        } else {
-//            return current;
-//        }
-//        return current;
-//    }
-//    public void addCPU(String specs) {
-//        rootCPU = recursive(rootCPU, specs);
-//    }
-//    public String[] search(String selected) {
-//        Component cpu;
-//        cpu = rootCPU;
-//        String[] temp = new String[13];
-//        while (cpu != null) {
-//            String[] specs = cpu.specs.split(",");
-//            if (specs[0].compareTo(selected) == 0) {
-//                System.out.println(specs.toString());
-//                temp = new String[]{specs[0], specs[1], specs[2], specs[3], specs[4], specs[5], specs[6], specs[7], specs[8], specs[9], specs[10],specs[11],specs[12]};
-//                //                temp = new String[]{"Processor:\t\t\t\t" + specs[0], "Actual Cores:\t\t\t\t"+ specs[1], "Threads: \t\t\t\t\t" + specs[2],
-////                        "Memory Type: \t\t\t" + specs[3],
-////                        "Base Clock Frequency: \t\t" + specs[4], "Max Clock Frequency: \t\t" + specs[5], "Chipset: \t\t\t\t\t"+specs[6],
-////                        "PCIe Generation: \t\t\t"+specs[7],"Socket: \t\t\t\t\t"+ specs[8], "Total Power Draw: \t\t\t"+specs[9]
-////                        ,"Integrated Graphics: \t\t" + specs[10], "CPU Cooler: \t\t\t\t" + specs[11],"Suggested Retail Price in U$: \t"+ specs[12]};
-//                break;
-//            }
-//            if (specs[0].compareTo(selected) > 0) cpu = cpu.left;
-//            else cpu = cpu.right;
-//        }
-//        return temp;
-//    }
-//}
-//class TreeMotherboard{
-//        Component rootMotherboard;
-//        TreeMotherboard() {
-//            rootMotherboard = null;
-//        }
-//        private Component recursive(Component current, String specs) {
-//            if (current == null) {
-//                return new Component(specs);
-//            }
-//            if (specs.compareTo(current.specs) < 0) {
-//                current.left = recursive(current.left, specs);
-//            } else if (specs.compareTo(current.specs) > 0) {
-//                current.right = recursive(current.right, specs);
-//            } else {
-//                return current;
-//            }
-//            return current;
-//        }
-//        public void addMotherboard(String specs) {
-//            rootMotherboard = recursive(rootMotherboard, specs);
-//        }
-//        public String[] search(String selected) {
-//            Component motherboard;
-//            motherboard= rootMotherboard;
-//            String[] temp = new String[13];
-//            while (motherboard != null) {
-//                String[] specs = motherboard.specs.split(",");
-//                if (specs[0].compareTo(selected) == 0) {
-////                    temp = new String[]{specs[0], specs[1], specs[2], specs[3], specs[4], specs[5], specs[6], specs[7], specs[8], specs[9], specs[10],specs[11],specs[12]};
-//                    //                temp = new String[]{"Processor:\t\t\t\t" + specs[0], "Actual Cores:\t\t\t\t"+ specs[1], "Threads: \t\t\t\t\t" + specs[2],
-////                        "Memory Type: \t\t\t" + specs[3],
-////                        "Base Clock Frequency: \t\t" + specs[4], "Max Clock Frequency: \t\t" + specs[5], "Chipset: \t\t\t\t\t"+specs[6],
-////                        "PCIe Generation: \t\t\t"+specs[7],"Socket: \t\t\t\t\t"+ specs[8], "Total Power Draw: \t\t\t"+specs[9]
-////                        ,"Integrated Graphics: \t\t" + specs[10], "CPU Cooler: \t\t\t\t" + specs[11],"Suggested Retail Price in U$: \t"+ specs[12]};
-//                    break;
-//                }
-//                if (specs[0].compareTo(selected) > 0) motherboard = motherboard.left;
-//                else motherboard = motherboard.right;
-//            }
-//            return temp;
-//        }
-//}
-
     public class PCBuilderController implements Initializable {
         public static String current;
         public static String[] selectedParts = new String[6];
         public static String[] compatibilityMotherboard= new String[5];
+        public static int[] priceList;
+        public static int buildTotalPrice;
         int stage = 0;
         @FXML
         private AnchorPane startPane, programPane;
         @FXML
-        private Label partLabel;
+        private Label partLabel, costLabel;
         @FXML
         public ListView<String> partsList;
         @FXML
@@ -222,7 +128,7 @@ import java.util.Scanner;
         }
         ArrayList<String> allMobo;
         private void initMobo() throws FileNotFoundException{
-            allMobo = new ArrayList<>(mobo(compatibilityMotherboard[0],compatibilityMotherboard[1]));
+            allMobo = new ArrayList<>(mobo(compatibilityMotherboard[0],compatibilityMotherboard[1], compatibilityMotherboard [2]));
             for (int i = 0; i< allMobo.size(); i++) {
                 String[] specs = allMobo.get(i).split(",");
                 partsList.getItems().add(specs[0]);
@@ -237,14 +143,19 @@ import java.util.Scanner;
                 partsList.getItems().add(specs[0]);
             }
         }
-        private ArrayList<String> mobo(String typeRAM, String typeSocket) throws FileNotFoundException {
+        private ArrayList<String> mobo(String typeRAM, String typeSocket, String chipset) throws FileNotFoundException {
             ArrayList<String> listMobo = new ArrayList<>();
             Scanner s = new Scanner(new File("src/main/resources/ph/edu/dlsu/lbycpa2/pcbuilderapplication/CPA2Motherboard.csv"));
             s.useDelimiter(",");
             while (s.hasNextLine()){
                 String line = s.nextLine();
-                if(line.contains(typeRAM) && line.contains(typeSocket)){
-                    listMobo.add(line);
+                String[] specs = line.split(",");
+                String[] chipsets = specs[6].split("/");
+                for(int i = 0; i < chipsets.length; i++) {
+                    if (line.contains(typeRAM) && line.contains(typeSocket) && line.contains(chipsets[i])) {
+                        listMobo.add(line);
+                    }
+                    System.out.println(chipsets[i]);
                 }
             }
             return listMobo;
@@ -261,20 +172,29 @@ import java.util.Scanner;
             }
             return listRAM;
         }
-
         private void getMotherboardCompatibility(){
             if(stage == 0) {
-                String target = "";
+                String target;
                 for (int i = 0; i < allCPU.size(); i++) {
                     if (allCPU.get(i).contains(current)) {
                         target = allCPU.get(i);
+                        String[] specsSelectedCPU = target.split(",");
+                        compatibilityMotherboard[0] = specsSelectedCPU[3]; // RAM
+                        compatibilityMotherboard[1] = specsSelectedCPU[8]; // Socket
+                        compatibilityMotherboard[2] = specsSelectedCPU[6]; // Chipset
+                        compatibilityMotherboard[3] = specsSelectedCPU[7]; // PCIe
                         break;
                     }
                 }
-                String[] specsSelectedCPU = target.split(",");
-                compatibilityMotherboard[0] = specsSelectedCPU[3]; // RAM
-                compatibilityMotherboard[1] = specsSelectedCPU[8]; // Socket
             }
+        }
+        private void getCaseCompatibility(){
+            if(stage == 2){
+
+            }
+        }
+        private void getComponentCost(int Stage, String selected){
+
         }
         private void clearListViews(){
             partsList.getItems().clear();
@@ -282,11 +202,11 @@ import java.util.Scanner;
         }
         String[] cpuSpecsLabel = new String[13];
         String[] moboSpecsLabel = new String[11];
-        String[] ramSpecsLabel = new String[5];
+        String[] ramSpecsLabel = new String[7];
         private void setTitles(){
             cpuSpecsLabel = new String[]{"Processor:\t\t\t\t", "Actual Cores:\t\t\t\t", "Threads: \t\t\t\t\t", "Memory Type: \t\t\t", "Base Clock Frequency: \t\t", "Max Clock Frequency: \t\t", "Chipset: \t\t\t\t\t", "PCIe Generation: \t\t\t", "Socket: \t\t\t\t\t", "Total Power Draw: \t\t\t", "Integrated Graphics: \t\t", "CPU Cooler: \t\t\t\t", "Suggested Retail Price in U$: \t"};
-            moboSpecsLabel = new String[]{"Motherboard:\t\t", "Memory Type:\t\t", "RAM Slots:\t\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t","Supported Socket:  ", "Price in USD: \t\t"};
-            ramSpecsLabel = new String[]{"Name: \t\t\t", "Memory Type:\t\t", "Memory Speed:\t", "Price in U$:\t\t", "Available Colors:\t"};
+            moboSpecsLabel = new String[]{"Motherboard:\t\t", "Size:\t\t\t\t", "Memory Type:\t\t", "RAM Slots:\t\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t","Chipset:\t\t\t","Supported Socket:  ", "Price in USD: \t\t"};
+            ramSpecsLabel = new String[]{"Name: \t\t\t","Memory Type:\t\t", "GB per Module:\t","Quantity:\t\t\t", "Memory Speed:\t", "Available Colors:\t", "Price in U$:\t\t"};
         }
         private void setSpecsList(String selected, String[] stageSpecs){
             specsList.getItems().clear();
@@ -322,12 +242,12 @@ import java.util.Scanner;
             partsList.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
                 current = String.valueOf(partsList.getSelectionModel().getSelectedItem());
                 selectedParts[stage] = current;
-                if(stage == 0)getMotherboardCompatibility();
+                getMotherboardCompatibility();
                 if(stage == 0) setSpecsList(current, cpuSpecsLabel);
                 if(stage == 1) setSpecsList(current, moboSpecsLabel);
                 if(stage == 2) setSpecsList(current, ramSpecsLabel);
-                defaultImage();
                 setPartImage(current);
+                System.out.println(compatibilityMotherboard[2]);
             });
 
         }
