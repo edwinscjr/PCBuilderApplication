@@ -15,7 +15,7 @@ public class PCBuilderApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(PCBuilderApplication.class.getResource("PCBuilderGUI.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 700, 500);
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         primaryStage.setTitle("PC Builder Application");
         primaryStage.setScene(scene);
         primaryStage.show();

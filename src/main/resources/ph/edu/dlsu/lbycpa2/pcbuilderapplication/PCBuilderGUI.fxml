@@ -5,53 +5,190 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpa2.pcbuilderapplication.PCBuilderController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpa2.pcbuilderapplication.PCBuilderController">
    <children>
-      <AnchorPane fx:id="programPane" prefHeight="500.0" prefWidth="700.0" visible="false">
+      <AnchorPane fx:id="programPane" prefHeight="600.0" prefWidth="800.0" visible="false">
          <children>
-            <ListView fx:id="partsList" layoutX="30.0" layoutY="120.0" prefHeight="318.0" prefWidth="302.0" />
-            <AnchorPane layoutX="349.0" layoutY="121.0" prefHeight="142.0" prefWidth="330.0">
+            <ListView fx:id="partsList" layoutX="30.0" layoutY="120.0" prefHeight="397.0" prefWidth="300.0" />
+            <AnchorPane layoutX="357.0" layoutY="121.0" prefHeight="198.0" prefWidth="410.0">
                <children>
-                  <ImageView fx:id="partImage" fitHeight="151.0" fitWidth="162.0" layoutX="84.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="partImage" fitHeight="198.0" fitWidth="253.0" layoutX="85.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
-            <Label layoutX="280.0" layoutY="14.0" text="PC BUILDER APPLICATION" />
-            <Label fx:id="partLabel" alignment="CENTER" layoutX="140.0" layoutY="42.0" prefHeight="38.0" prefWidth="418.0" text="Central Processing Unit (CPU)">
+            <Label layoutX="349.0" layoutY="28.0" text="PC BUILDER APPLICATION" />
+            <Label fx:id="partLabel" alignment="CENTER" layoutX="210.0" layoutY="46.0" prefHeight="38.0" prefWidth="418.0" text="Central Processing Unit (CPU)">
                <font>
                   <Font size="26.0" />
                </font>
             </Label>
-            <Button fx:id="nextButton" layoutX="532.0" layoutY="449.0" mnemonicParsing="false" onAction="#onNextClick" prefHeight="38.0" prefWidth="148.0" text="Next" />
-            <Button fx:id="prevButton" disable="true" layoutX="350.0" layoutY="449.0" mnemonicParsing="false" onAction="#onPrevClick" prefHeight="38.0" prefWidth="148.0" text="Previous" />
-            <ListView fx:id="specsList" layoutX="350.0" layoutY="315.0" prefHeight="122.0" prefWidth="330.0" />
-            <Label layoutX="454.0" layoutY="279.0" text="Specifications">
+            <Button fx:id="nextButton" layoutX="574.0" layoutY="538.0" mnemonicParsing="false" onAction="#onNextClick" prefHeight="38.0" prefWidth="190.0" text="Next" />
+            <Button fx:id="prevButton" disable="true" layoutX="360.0" layoutY="538.0" mnemonicParsing="false" onAction="#onPrevClick" prefHeight="38.0" prefWidth="190.0" text="Previous" />
+            <ListView fx:id="specsList" layoutX="360.0" layoutY="369.0" prefHeight="150.0" prefWidth="410.0" />
+            <Label layoutX="502.0" layoutY="327.0" text="Specifications">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label layoutX="30.0" layoutY="459.0" text="Total Cost of Build in USD:">
+            <Label layoutX="30.0" layoutY="547.0" text="Total Cost of Build in USD:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="costLabel" layoutX="212.0" layoutY="454.0" text="COST">
+            <Label fx:id="costLabel" layoutX="210.0" layoutY="543.0" text="COST">
                <font>
                   <Font size="19.0" />
                </font>
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="startPane" prefHeight="500.0" prefWidth="700.0">
+      <AnchorPane fx:id="startPane" prefHeight="600.0" prefWidth="800.0">
          <children>
-            <Button layoutX="308.0" layoutY="382.0" mnemonicParsing="false" onAction="#onStartClick" prefHeight="26.0" prefWidth="84.0" text="Start" />
-            <Label layoutX="161.0" layoutY="155.0" text="Welcome to PC Builder Application!">
+            <Button layoutX="349.0" layoutY="401.0" mnemonicParsing="false" onAction="#onStartClick" prefHeight="26.0" prefWidth="84.0" text="Start" />
+            <Label layoutX="211.0" layoutY="161.0" text="Welcome to PC Builder Application!">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" layoutX="233.0" layoutY="334.0" prefHeight="30.0" prefWidth="234.0" text="Click Start to Begin making your computer" wrapText="true" />
+            <Label alignment="CENTER" layoutX="253.0" layoutY="363.0" prefHeight="30.0" prefWidth="276.0" text="Click Start to Experience Hassle-free PC Building" wrapText="true">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></Label>
+            <Label alignment="CENTER" layoutX="317.0" layoutY="245.0" prefHeight="28.0" prefWidth="148.0" text="A Program Developed By: " wrapText="true" />
+            <Label alignment="CENTER" layoutX="340.0" layoutY="273.0" prefHeight="18.0" prefWidth="101.0" text="Edwin Concepcion Jr" wrapText="true">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="327.0" layoutY="291.0" prefHeight="18.0" prefWidth="127.0" text="Joshua Matthew Martinez" wrapText="true">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="334.0" layoutY="309.0" prefHeight="18.0" prefWidth="113.0" text="Lorenzo Agustin Ramos" wrapText="true">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="endPane" prefHeight="600.0" prefWidth="800.0" visible="false">
+         <children>
+            <GridPane layoutX="41.0" layoutY="253.0" prefHeight="221.0" prefWidth="718.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.8" minWidth="10.0" prefWidth="186.2" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="322.40003051757816" minWidth="10.0" prefWidth="275.8000305175782" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.79996337890628" minWidth="10.0" prefWidth="79.99997558593748" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.79996337890628" minWidth="10.0" prefWidth="81.60002441406255" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Central Processing Unit (CPU):" GridPane.rowIndex="1" />
+                  <Label text="Motherboard:" GridPane.rowIndex="2" />
+                  <Label text="Random Access Memory (RAM): " GridPane.rowIndex="3" />
+                  <Label fx:id="cpuLabel" prefHeight="18.0" prefWidth="338.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="mbLabel" prefHeight="18.0" prefWidth="326.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="ramLabel" prefHeight="18.0" prefWidth="338.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Case:" GridPane.rowIndex="4" />
+                  <Label text="Graphics Processing Unit (GPU):" GridPane.rowIndex="5" />
+                  <Label text="Power Supply Unit (GPU):" GridPane.rowIndex="6" />
+                  <Label fx:id="psuLabel" prefHeight="18.0" prefWidth="343.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label fx:id="gpuLabel" prefHeight="18.0" prefWidth="385.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label fx:id="caseLabel" prefHeight="18.0" prefWidth="374.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="213.0" text="Part" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="351.0" text="Name" GridPane.columnIndex="1" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="125.0" text="*Price in USD" GridPane.columnIndex="2" />
+                  <Label fx:id="cpuPrice" alignment="CENTER" prefHeight="18.0" prefWidth="124.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Label fx:id="mbPrice" alignment="CENTER" prefHeight="18.0" prefWidth="125.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <Label fx:id="ramPrice" alignment="CENTER" prefHeight="18.0" prefWidth="122.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <Label fx:id="casePrice" alignment="CENTER" prefHeight="18.0" prefWidth="107.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                  <Label fx:id="gpuPrice" alignment="CENTER" prefHeight="18.0" prefWidth="112.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                  <Label fx:id="psuPrice" alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                  <Label fx:id="totalLabel" alignment="CENTER" prefHeight="18.0" prefWidth="181.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                  <Label alignment="TOP_RIGHT" prefHeight="18.0" prefWidth="317.0" text="Total:  " GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="125.0" text="**Price in PHP" GridPane.columnIndex="3" />
+                  <Label fx:id="cpuPHP" alignment="CENTER" prefHeight="18.0" prefWidth="110.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Label fx:id="mbPHP" alignment="CENTER" prefHeight="18.0" prefWidth="115.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <Label fx:id="ramPHP" alignment="CENTER" prefHeight="18.0" prefWidth="116.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <Label fx:id="casePHP" alignment="CENTER" prefHeight="18.0" prefWidth="117.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                  <Label fx:id="gpuPHP" alignment="CENTER" prefHeight="18.0" prefWidth="113.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                  <Label fx:id="psuPHP" alignment="CENTER" prefHeight="18.0" prefWidth="104.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                  <Label fx:id="totalPHP" alignment="CENTER" prefHeight="18.0" prefWidth="117.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                  <Label prefHeight="18.0" prefWidth="190.0" text="Cooler:" GridPane.rowIndex="7" />
+                  <Label fx:id="coolerLabel" prefHeight="18.0" prefWidth="308.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <Label fx:id="coolerPrice" alignment="CENTER" prefHeight="18.0" prefWidth="117.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                  <Label fx:id="coolerPHP" alignment="CENTER" prefHeight="18.0" prefWidth="114.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                  <Label prefHeight="18.0" prefWidth="190.0" text="Storage:" GridPane.rowIndex="8" />
+                  <Label fx:id="storageLabel" prefHeight="18.0" prefWidth="305.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <Label fx:id="storagePrice" alignment="CENTER" prefHeight="18.0" prefWidth="115.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                  <Label fx:id="storagePHP" alignment="CENTER" prefHeight="18.0" prefWidth="117.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="8" />
+               </children>
+            </GridPane>
+            <Label layoutX="14.0" layoutY="568.0" text="**Using February 22, 2021 Rates" />
+            <ImageView fitHeight="103.0" fitWidth="108.0" layoutX="42.0" layoutY="73.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="129.0" fitWidth="139.0" layoutX="530.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="129.0" fitWidth="139.0" layoutX="341.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true" />
+            <GridPane gridLinesVisible="true" layoutX="12.0" layoutY="49.0" prefHeight="150.0" prefWidth="774.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="73.60000762939453" minHeight="9.599981689453124" prefHeight="18.39998779296875" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="156.80001220703124" minHeight="3.9999923706054688" prefHeight="132.80001220703124" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="CPU" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="GPU" GridPane.columnIndex="4" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="Case" GridPane.columnIndex="3" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="RAM" GridPane.columnIndex="2" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="Motherboard" GridPane.columnIndex="1" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="PSU" GridPane.columnIndex="5" />
+                  <ImageView fx:id="cpuImage" fitHeight="140.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+                  <ImageView fx:id="mbImage" fitHeight="141.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ImageView fx:id="ramImage" fitHeight="139.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <ImageView fx:id="caseImage" fitHeight="136.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <ImageView fx:id="gpuImage" fitHeight="133.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                  <ImageView fx:id="psuImage" fitHeight="136.0" fitWidth="98.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="Cooler" GridPane.columnIndex="6" />
+                  <Label alignment="CENTER" prefHeight="18.0" prefWidth="132.0" text="Storage" GridPane.columnIndex="7" />
+                  <ImageView fx:id="coolerImage" fitHeight="135.0" fitWidth="98.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                  <ImageView fx:id="storageImage" fitHeight="131.0" fitWidth="98.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+            <Label layoutX="273.0" layoutY="568.0" text="This page has been automatically saved as .docx file" />
+            <Label layoutX="14.0" layoutY="551.0" text="*MSRP as of February 22, 2021" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="auxPane" layoutX="312.0" layoutY="1.0" prefHeight="570.0" prefWidth="210.0" visible="false">
+         <children>
+            <Label alignment="CENTER" layoutX="13.0" layoutY="14.0" prefHeight="30.0" prefWidth="183.0" text="Review of Selected Parts">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Button layoutX="51.0" layoutY="520.0" mnemonicParsing="false" onAction="#onStartOverClick" prefHeight="35.0" prefWidth="108.0" text="Start Over" />
          </children>
       </AnchorPane>
    </children>
