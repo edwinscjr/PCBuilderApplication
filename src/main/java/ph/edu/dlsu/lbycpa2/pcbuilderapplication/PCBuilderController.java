@@ -253,7 +253,7 @@ public class PCBuilderController implements Initializable {
                     }
                 }
             }
-            if (Stage == 1 ){
+            if (Stage == 1){
                 for(int i = 0; i < allMobo.size(); i++){
                     String [] specs = allMobo.get(i).split(",");
                     if(specs[0].equals(selected)){
@@ -262,16 +262,7 @@ public class PCBuilderController implements Initializable {
                     }
                 }
             }
-            if (Stage == 1 ){
-                for(int i = 0; i < allMobo.size(); i++){
-                    String [] specs = allMobo.get(i).split(",");
-                    if(specs[0].equals(selected)){
-                        partCost = Double.parseDouble(specs[specs.length-1]);
-                        break;
-                    }
-                }
-            }
-            if (Stage == 2 ){
+            if (Stage == 2){
                 for(int i = 0; i < allRAM.size(); i++){
                     String [] specs = allRAM.get(i).split(",");
                     if(specs[0].equals(selected)){
@@ -280,7 +271,7 @@ public class PCBuilderController implements Initializable {
                     }
                 }
             }
-            if (Stage == 3 ){
+            if (Stage == 3){
                 for(int i = 0; i < allCase.size(); i++){
                     String [] specs = allCase.get(i).split(",");
                     if(specs[0].equals(selected)){
@@ -289,9 +280,9 @@ public class PCBuilderController implements Initializable {
                     }
                 }
             }
-            if (Stage == 4 ){
-                for(int i = 0; i < allMobo.size(); i++){
-                    String [] specs = allMobo.get(i).split(",");
+            if (Stage == 4){
+                for(int i = 0; i < allGPU.size(); i++){
+                    String [] specs = allGPU.get(i).split(",");
                     if(specs[0].equals(selected)){
                         partCost = Double.parseDouble(specs[specs.length-1]);
                         break;
@@ -311,29 +302,30 @@ public class PCBuilderController implements Initializable {
         String[] ramSpecsLabel = new String[7];
         String[] casesSpecsLabel = new String[6];
         String[] gpuSpecsLabel = new String[8];
+//        String[] psuSpecsLabel = new String[]
 
-    private ArrayList<String> gpu() throws FileNotFoundException {
+    private ArrayList<String> gpu(int maxLength) throws FileNotFoundException {
         ArrayList<String> listGPU = new ArrayList<>();
         Scanner s = new Scanner(new File("src/main/resources/ph/edu/dlsu/lbycpa2/pcbuilderapplication/CPA2GPU.csv"));
         s.useDelimiter(",");
         while (s.hasNextLine()) {
             String line = s.nextLine();
-            if(line.contains(String.valueOf(compatibleLengthGPU)))
-            listGPU.add(line);
+            String [] specs = line.split(",");
+            if(Integer.parseInt(specs[7])<= maxLength) listGPU.add(line);
         }
         return listGPU;
     }
 
     ArrayList<String> allGPU;
     private void initGPU() throws FileNotFoundException{
-        allGPU = new ArrayList<>(gpu());
+        allGPU = new ArrayList<>(gpu(compatibleLengthGPU));
         for (int i = 0; i<allGPU.size(); i++){
             String[] specs = allGPU.get(i).split(",");
             partsList.getItems().add(specs[0]);
         }
     }
     int compatibleLengthGPU = 0;
-    private void getCPUCompatibility(){
+    private void getGPUCompatibility(){
         if (stage == 3) {
             String target;
             for (int i = 0; i < allCase.size(); i++) {
@@ -351,7 +343,7 @@ public class PCBuilderController implements Initializable {
         moboSpecsLabel = new String[]{"Motherboard:\t\t", "Size:\t\t\t\t", "Memory Type:\t\t", "RAM Slots:\t\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t","Chipset:\t\t\t","Supported Socket:  ", "Price in USD: \t\t"};
         ramSpecsLabel = new String[]{"Name: \t\t\t","Memory Type:\t\t", "GB per Module:\t","Quantity:\t\t\t", "Memory Speed:\t", "Available Colors:\t", "Price in U$:\t\t"};
         casesSpecsLabel = new String[]{"Name:\t\t\t","Size:\t\t\t\t", "Color:\t\t\t", "Max GPU Length:\t", "Front I/O Ports:\t", "Price:\t\t\t"};
-        gpuSpecsLabel = new String[]{"Name:\t\t\t","Chipset:\t\t\t","Memory: \t\t\t" ,"Core Clock:\t\t", "Boost Clock:\t\t", "Color:\t\t\t", "Length:\t\t\t", "Price:\t\t\t"};
+        gpuSpecsLabel = new String[]{"Name:\t\t\t","Chipset:\t\t\t","TDP:\t\t\t\t","Memory: \t\t\t" ,"Core Clock:\t\t", "Boost Clock:\t\t", "Color:\t\t\t", "Length:\t\t\t", "Price:\t\t\t"};
     }
 
     private void setSpecsList(String selected, String[] stageSpecs){
@@ -405,6 +397,7 @@ public class PCBuilderController implements Initializable {
                 current = String.valueOf(partsList.getSelectionModel().getSelectedItem());
                 getMotherboardCompatibility();
                 getCaseAndRamCompatibility();
+                getGPUCompatibility();
                 if (stage == 0) setSpecsList(current, cpuSpecsLabel);
                 if (stage == 1) setSpecsList(current, moboSpecsLabel);
                 if (stage == 2) setSpecsList(current, ramSpecsLabel);
@@ -413,13 +406,14 @@ public class PCBuilderController implements Initializable {
                 setPartImage(current);
                 tempCost = getComponentCost(stage, current);
                 t = tempCost + buildTotalPrice;
-                costLabel.setText(String.valueOf(t));
+                costLabel.setText(String.format("%.2f", t));
 
             });
         }
         private void addCosts(){
             buildTotalPrice = buildTotalPrice + tempCost;
-            costLabel.setText(String.valueOf(buildTotalPrice));
+
+            costLabel.setText(String.format("%.2f", buildTotalPrice));
         }
         private void defaultImage() {
             File img = new File("src/main/resources/assets/noImage.jpg");
