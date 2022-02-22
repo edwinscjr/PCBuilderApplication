@@ -19,5 +19,6 @@ public class PCBuilderApplication extends Application {
         primaryStage.setTitle("PC Builder Application");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setResizable(false);
     }
 }
