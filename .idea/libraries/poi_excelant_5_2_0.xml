@@ -24,5 +24,8 @@
       <root url="jar://$PROJECT_DIR$/poi-bin-5.2.0/poi-javadoc-5.2.0.jar!/" />
     </JAVADOC>
     <SOURCES />
+    <excluded>
+      <root url="jar://$PROJECT_DIR$/poi-bin-5.2.0/poi-ooxml-lite-5.2.0.jar!/" />
+    </excluded>
   </library>
 </component>
