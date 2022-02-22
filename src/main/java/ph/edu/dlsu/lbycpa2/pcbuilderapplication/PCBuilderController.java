@@ -8,7 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -57,7 +56,9 @@ public class PCBuilderController implements Initializable {
             selectedParts.push(current);
             defaultImage();
             clearListViews();
-            stage++;
+            if(stage <5) {
+                stage++;
+            }
             switch (stage) {
                 case 0 -> {
                     prevButton.setDisable(true);
@@ -85,13 +86,13 @@ public class PCBuilderController implements Initializable {
                     partLabel.setText("Power Supply");
                 }
             }
-//            System.out.println(selectedParts.peek());
-            getComponentCost(stage, current);
+            getComponentCost(current, stage);
         }
 
         @FXML
         public void onPrevClick() throws FileNotFoundException {
-            selectedParts.pop();
+//            selectedParts.pop();
+            subtractPrevious();
             defaultImage();
             clearListViews();
             stage--;
@@ -122,16 +123,15 @@ public class PCBuilderController implements Initializable {
                     partLabel.setText("Power Supply");
                 }
             }
+
         }
 
         private ArrayList<String> cpu() throws FileNotFoundException {
             ArrayList<String> listCPU = new ArrayList<>();
-//            TreeCPU tCPU = new TreeCPU();
             Scanner s = new Scanner(new File("src/main/resources/ph/edu/dlsu/lbycpa2/pcbuilderapplication/CPA2CPU.csv"));
             s.useDelimiter(",");
             while (s.hasNextLine()) {
                 String line = s.nextLine();
-//                tCPU.addCPU(line);
                 listCPU.add(line);
             }
             return listCPU;
@@ -242,54 +242,25 @@ public class PCBuilderController implements Initializable {
             }
         }
 
-        private double getComponentCost(int Stage, String selected) {
+        private double getComponentCost(String selected, int Stage) {
             double partCost = 0;
-            if (Stage == 0 ){
-                for(int i = 0; i < allCPU.size(); i++){
-                    String [] specs = allCPU.get(i).split(",");
-                    if(specs[0].equals(selected)){
-                        partCost = Double.parseDouble(specs[(specs.length-1)]);
-                        break;
-                    }
-                }
-            }
-            if (Stage == 1){
-                for(int i = 0; i < allMobo.size(); i++){
-                    String [] specs = allMobo.get(i).split(",");
-                    if(specs[0].equals(selected)){
-                        partCost = Double.parseDouble(specs[specs.length-1]);
-                        break;
-                    }
-                }
-            }
-            if (Stage == 2){
-                for(int i = 0; i < allRAM.size(); i++){
-                    String [] specs = allRAM.get(i).split(",");
-                    if(specs[0].equals(selected)){
-                        partCost = Double.parseDouble(specs[specs.length-1]);
-                        break;
-                    }
-                }
-            }
-            if (Stage == 3){
-                for(int i = 0; i < allCase.size(); i++){
-                    String [] specs = allCase.get(i).split(",");
-                    if(specs[0].equals(selected)){
-                        partCost = Double.parseDouble(specs[specs.length-1]);
-                        break;
-                    }
-                }
-            }
-            if (Stage == 4){
-                for(int i = 0; i < allGPU.size(); i++){
-                    String [] specs = allGPU.get(i).split(",");
-                    if(specs[0].equals(selected)){
-                        partCost = Double.parseDouble(specs[specs.length-1]);
+            ArrayList [] arrays = new ArrayList[] {allCPU, allMobo, allRAM, allCase,allGPU};
+            if(stage < 5) {
+                for (int i = 0; i < arrays[Stage].size(); i++) {
+                    String[] specs = String.valueOf(arrays[Stage].get(i)).split(",");
+                    if (specs[0].equals(selected)) {
+                        partCost = Double.parseDouble(specs[(specs.length - 1)]);
                         break;
                     }
                 }
             }
             return partCost;
+        }
+        private void subtractPrevious(){
+            double sub = getComponentCost(selectedParts.pop(), stage-1);
+            buildTotalPrice = buildTotalPrice - sub;
+            costLabel.setText(String.format("%.2f", buildTotalPrice));
+
         }
 
         private void clearListViews() {
@@ -302,7 +273,19 @@ public class PCBuilderController implements Initializable {
         String[] ramSpecsLabel = new String[7];
         String[] casesSpecsLabel = new String[6];
         String[] gpuSpecsLabel = new String[8];
-//        String[] psuSpecsLabel = new String[]
+        String[] psuSpecsLabel = new String[6];
+
+    private ArrayList<String> psu(int tdp) throws FileNotFoundException {
+        ArrayList<String> listGPU = new ArrayList<>();
+        Scanner s = new Scanner(new File("src/main/resources/ph/edu/dlsu/lbycpa2/pcbuilderapplication/CPA2PSU.csv"));
+        s.useDelimiter(",");
+        while (s.hasNextLine()) {
+            String line = s.nextLine();
+            String [] specs = line.split(",");
+            if(Integer.parseInt(specs[7])<= tdp) listGPU.add(line);
+        }
+        return listGPU;
+    }
 
     private ArrayList<String> gpu(int maxLength) throws FileNotFoundException {
         ArrayList<String> listGPU = new ArrayList<>();
@@ -338,6 +321,12 @@ public class PCBuilderController implements Initializable {
         }
     }
 
+    private void getPSUCompatibility(){
+        if(stage == 4){
+            String target;
+
+        }
+    }
     private void setTitles(){
         cpuSpecsLabel = new String[]{"Processor:\t\t\t\t", "Actual Cores:\t\t\t\t", "Threads: \t\t\t\t\t", "Memory Type: \t\t\t", "Base Clock Frequency: \t\t", "Max Clock Frequency: \t\t", "Chipset: \t\t\t\t\t", "PCIe Generation: \t\t\t", "Socket: \t\t\t\t\t", "Total Power Draw: \t\t\t", "Integrated Graphics: \t\t", "CPU Cooler: \t\t\t\t", "Suggested Retail Price in U$: \t"};
         moboSpecsLabel = new String[]{"Motherboard:\t\t", "Size:\t\t\t\t", "Memory Type:\t\t", "RAM Slots:\t\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t","Chipset:\t\t\t","Supported Socket:  ", "Price in USD: \t\t"};
@@ -346,48 +335,18 @@ public class PCBuilderController implements Initializable {
         gpuSpecsLabel = new String[]{"Name:\t\t\t","Chipset:\t\t\t","TDP:\t\t\t\t","Memory: \t\t\t" ,"Core Clock:\t\t", "Boost Clock:\t\t", "Color:\t\t\t", "Length:\t\t\t", "Price:\t\t\t"};
     }
 
-    private void setSpecsList(String selected, String[] stageSpecs){
+
+    private void setSpecsList(String selected){
+        ArrayList [] arrays = new ArrayList[] {allCPU, allMobo, allRAM, allCase,allGPU};
+        String[][] strings = new String[][]{cpuSpecsLabel, moboSpecsLabel, ramSpecsLabel, casesSpecsLabel, gpuSpecsLabel};
         specsList.getItems().clear();
+        ArrayList stageArray = arrays[stage];
         String specs = "";
-        if(stage == 0){
-            for(int i = 0; i<allCPU.size(); i++){
-                if(allCPU.get(i).contains(selected)){
-                    specs = allCPU.get(i);
-                }
-            }
-        }
-        if(stage == 1){
-            for(int i = 0; i<allMobo.size(); i++){
-                if(allMobo.get(i).contains(selected)){
-                    specs = allMobo.get(i);
-                }
-            }
-        }
-        if(stage == 2){
-            for(int i = 0; i<allRAM.size(); i++){
-                if(allRAM.get(i).contains(selected)){
-                    specs = allRAM.get(i);
-                }
-            }
-        }
-        if(stage == 3){
-            for(int i = 0; i<allCase.size(); i++){
-                if(allCase.get(i).contains(selected)){
-                    specs = allCase.get(i);
-                }
-            }
-        }
-        if(stage == 4){
-            for(int i = 0; i<allGPU.size(); i++){
-                if(allGPU.get(i).contains(selected)){
-                    specs = allGPU.get(i);
-                }
-            }
+        for(int i = 0; i<stageArray.size(); i++) {
+            if (stageArray.get(i).toString().contains(selected)) specs = String.valueOf(stageArray.get(i));
         }
         String [] specsArray = specs.split(",");
-        for(int i = 0; i < specsArray.length; i++ ){
-            specsList.getItems().add(stageSpecs[i] + specsArray[i]);
-        }
+        for(int i = 0; i < specsArray.length; i++ ) specsList.getItems().add(strings[0][i] + specsArray[i]);
     }
         double tempCost=0;
         @Override
@@ -398,13 +357,9 @@ public class PCBuilderController implements Initializable {
                 getMotherboardCompatibility();
                 getCaseAndRamCompatibility();
                 getGPUCompatibility();
-                if (stage == 0) setSpecsList(current, cpuSpecsLabel);
-                if (stage == 1) setSpecsList(current, moboSpecsLabel);
-                if (stage == 2) setSpecsList(current, ramSpecsLabel);
-                if (stage == 3) setSpecsList(current, casesSpecsLabel);
-                if (stage == 4) setSpecsList(current, gpuSpecsLabel);
+                setSpecsList(current);
                 setPartImage(current);
-                tempCost = getComponentCost(stage, current);
+                tempCost = getComponentCost(current, stage);
                 t = tempCost + buildTotalPrice;
                 costLabel.setText(String.format("%.2f", t));
 
@@ -412,7 +367,6 @@ public class PCBuilderController implements Initializable {
         }
         private void addCosts(){
             buildTotalPrice = buildTotalPrice + tempCost;
-
             costLabel.setText(String.format("%.2f", buildTotalPrice));
         }
         private void defaultImage() {
