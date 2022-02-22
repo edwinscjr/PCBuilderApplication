@@ -71,6 +71,7 @@ import java.util.Scanner;
                 }
                 case 3 -> {
                     partLabel.setText("Case");
+                    initCase();
                 }
                 case 4 -> {
                     partLabel.setText("Graphics Processing Unit");
@@ -104,6 +105,7 @@ import java.util.Scanner;
                 }
                 case 3 -> {
                     partLabel.setText("Case");
+                    initCase();
                 }
                 case 4 -> {
                     partLabel.setText("Graphics Processing Unit");
@@ -150,7 +152,7 @@ import java.util.Scanner;
             while (s.hasNextLine()){
                 String line = s.nextLine();
                 String[] specs = line.split(",");
-                String[] chipsets = specs[6].split("/");
+                String[] chipsets = specs[10].split("/");
                 for(int i = 0; i < chipsets.length; i++) {
                     if (line.contains(typeRAM) && line.contains(typeSocket) && line.contains(chipsets[i])) {
                         listMobo.add(line);
@@ -172,6 +174,26 @@ import java.util.Scanner;
             }
             return listRAM;
         }
+        private ArrayList<String> cases(String size) throws FileNotFoundException {
+            ArrayList<String> listCases = new ArrayList<>();
+            Scanner s = new Scanner(new File("src/main/resources/ph/edu/dlsu/lbycpa2/pcbuilderapplication/CPA2Case.csv"));
+            s.useDelimiter(",");
+            while (s.hasNextLine()){
+                String line = s.nextLine();
+                if(line.contains(size)){
+                    listCases.add(line);
+                }
+            }
+            return listCases;
+        }
+        ArrayList<String> allCase;
+        private void initCase() throws FileNotFoundException{
+            allCase = new ArrayList<>(cases(compatibleCase));
+            for (int i = 0; i<allCase.size(); i++){
+                String[] specs = allCase.get(i).split(",");
+                partsList.getItems().add(specs[0]);
+            }
+        }
         private void getMotherboardCompatibility(){
             if(stage == 0) {
                 String target;
@@ -188,9 +210,18 @@ import java.util.Scanner;
                 }
             }
         }
-        private void getCaseCompatibility(){
-            if(stage == 2){
+        String compatibleCase;
 
+        private void getCaseCompatibility(){
+            if(stage == 1){
+                String target;
+                for(int i = 0; i < allMobo.size(); i++){
+                    if(allMobo.get(i).contains(current)) {
+                        target = allMobo.get(i);
+                        String[] specsSelectedMobo = target.split(",");
+                        compatibleCase = specsSelectedMobo[1];
+                    }
+                }
             }
         }
         private void getComponentCost(int Stage, String selected){
@@ -203,10 +234,14 @@ import java.util.Scanner;
         String[] cpuSpecsLabel = new String[13];
         String[] moboSpecsLabel = new String[11];
         String[] ramSpecsLabel = new String[7];
+        String[] casesSpecsLabel = new String[6];
+
+
         private void setTitles(){
             cpuSpecsLabel = new String[]{"Processor:\t\t\t\t", "Actual Cores:\t\t\t\t", "Threads: \t\t\t\t\t", "Memory Type: \t\t\t", "Base Clock Frequency: \t\t", "Max Clock Frequency: \t\t", "Chipset: \t\t\t\t\t", "PCIe Generation: \t\t\t", "Socket: \t\t\t\t\t", "Total Power Draw: \t\t\t", "Integrated Graphics: \t\t", "CPU Cooler: \t\t\t\t", "Suggested Retail Price in U$: \t"};
             moboSpecsLabel = new String[]{"Motherboard:\t\t", "Size:\t\t\t\t", "Memory Type:\t\t", "RAM Slots:\t\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t","Chipset:\t\t\t","Supported Socket:  ", "Price in USD: \t\t"};
             ramSpecsLabel = new String[]{"Name: \t\t\t","Memory Type:\t\t", "GB per Module:\t","Quantity:\t\t\t", "Memory Speed:\t", "Available Colors:\t", "Price in U$:\t\t"};
+            casesSpecsLabel = new String[]{"Name:\t\t\t","Size:\t\t\t\t", "Color:\t\t\t", "Max GPU Length:\t", "Front I/O Ports:\t", "Price:\t\t\t"};
         }
         private void setSpecsList(String selected, String[] stageSpecs){
             specsList.getItems().clear();
@@ -232,6 +267,13 @@ import java.util.Scanner;
                     }
                 }
             }
+            if(stage == 3){
+                for(int i = 0; i<allCase.size(); i++){
+                    if(allCase.get(i).contains(selected)){
+                        specs = allCase.get(i);
+                    }
+                }
+            }
             String [] specsArray = specs.split(",");
             for(int i = 0; i < specsArray.length; i++ ){
                 specsList.getItems().add(stageSpecs[i] + specsArray[i]);
@@ -243,11 +285,13 @@ import java.util.Scanner;
                 current = String.valueOf(partsList.getSelectionModel().getSelectedItem());
                 selectedParts[stage] = current;
                 getMotherboardCompatibility();
+                getCaseCompatibility();
                 if(stage == 0) setSpecsList(current, cpuSpecsLabel);
                 if(stage == 1) setSpecsList(current, moboSpecsLabel);
                 if(stage == 2) setSpecsList(current, ramSpecsLabel);
+                if(stage == 3) setSpecsList(current, casesSpecsLabel);
                 setPartImage(current);
-                System.out.println(compatibilityMotherboard[2]);
+                System.out.println(compatibleCase);
             });
 
         }
