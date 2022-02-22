@@ -22,7 +22,7 @@ public class PCBuilderController implements Initializable {
         public Stack<String> selectedParts = new Stack<>();
         public static String[] compatibilityMotherboard = new String[5];
         public static int[] priceList;
-        public static int buildTotalPrice;
+        public static double buildTotalPrice;
         int stage = 0;
         @FXML
         private AnchorPane startPane, programPane;
@@ -48,10 +48,12 @@ public class PCBuilderController implements Initializable {
                 String[] temp = allCPU.get(i).split(",");
                 partsList.getItems().add(temp[0]);
             }
+            costLabel.setText(String.valueOf(buildTotalPrice));
         }
 
         @FXML
         public void onNextClick() throws FileNotFoundException {
+            addCosts();
             selectedParts.push(current);
             defaultImage();
             clearListViews();
@@ -82,7 +84,8 @@ public class PCBuilderController implements Initializable {
                     partLabel.setText("Power Supply");
                 }
             }
-            System.out.println(selectedParts.peek());
+//            System.out.println(selectedParts.peek());
+            getComponentCost(stage, current);
         }
 
         @FXML
@@ -133,7 +136,6 @@ public class PCBuilderController implements Initializable {
         }
 
         ArrayList<String> allMobo;
-
         private void initMobo() throws FileNotFoundException {
             allMobo = new ArrayList<>(mobo(compatibilityMotherboard[0], compatibilityMotherboard[1], compatibilityMotherboard[2]));
             for (int i = 0; i < allMobo.size(); i++) {
@@ -142,9 +144,7 @@ public class PCBuilderController implements Initializable {
             }
 
         }
-
         ArrayList<String> allRAM;
-
         private void initRAM() throws FileNotFoundException {
             allRAM = new ArrayList<>(ram(compatibilityMotherboard[0], compatibleQuantity));
             for (int i = 0; i < allRAM.size(); i++) {
@@ -240,8 +240,54 @@ public class PCBuilderController implements Initializable {
             }
         }
 
-        private void getComponentCost(int Stage, String selected) {
-
+        private double getComponentCost(int Stage, String selected) {
+            double partCost = 0;
+            if (Stage == 0 ){
+                for(int i = 0; i < allCPU.size(); i++){
+                    String [] specs = allCPU.get(i).split(",");
+                    if(specs[0].equals(selected)){
+                        partCost = Double.parseDouble(specs[(specs.length-1)]);
+                        break;
+                    }
+                }
+            }
+            if (Stage == 1 ){
+                for(int i = 0; i < allMobo.size(); i++){
+                    String [] specs = allMobo.get(i).split(",");
+                    if(specs[0].equals(selected)){
+                        partCost = Double.parseDouble(specs[specs.length-1]);
+                        break;
+                    }
+                }
+            }
+            if (Stage == 1 ){
+                for(int i = 0; i < allMobo.size(); i++){
+                    String [] specs = allMobo.get(i).split(",");
+                    if(specs[0].equals(selected)){
+                        partCost = Double.parseDouble(specs[specs.length-1]);
+                        break;
+                    }
+                }
+            }
+            if (Stage == 2 ){
+                for(int i = 0; i < allRAM.size(); i++){
+                    String [] specs = allRAM.get(i).split(",");
+                    if(specs[0].equals(selected)){
+                        partCost = Double.parseDouble(specs[specs.length-1]);
+                        break;
+                    }
+                }
+            }
+            if (Stage == 3 ){
+                for(int i = 0; i < allCase.size(); i++){
+                    String [] specs = allCase.get(i).split(",");
+                    if(specs[0].equals(selected)){
+                        partCost = Double.parseDouble(specs[specs.length-1]);
+                        break;
+                    }
+                }
+            }
+            return partCost;
         }
 
         private void clearListViews() {
@@ -298,9 +344,11 @@ public class PCBuilderController implements Initializable {
                 specsList.getItems().add(stageSpecs[i] + specsArray[i]);
             }
         }
+        double tempCost=0;
         @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {
             partsList.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+                double t = 0;
                 current = String.valueOf(partsList.getSelectionModel().getSelectedItem());
                 getMotherboardCompatibility();
                 getCaseAndRamCompatibility();
@@ -309,8 +357,15 @@ public class PCBuilderController implements Initializable {
                 if (stage == 2) setSpecsList(current, ramSpecsLabel);
                 if (stage == 3) setSpecsList(current, casesSpecsLabel);
                 setPartImage(current);
-            });
+                tempCost = getComponentCost(stage, current);
+                t = tempCost + buildTotalPrice;
+                costLabel.setText(String.valueOf(t));
 
+            });
+        }
+        private void addCosts(){
+            buildTotalPrice = buildTotalPrice + tempCost;
+            costLabel.setText(String.valueOf(buildTotalPrice));
         }
         private void defaultImage() {
             File img = new File("src/main/resources/assets/noImage.jpg");
