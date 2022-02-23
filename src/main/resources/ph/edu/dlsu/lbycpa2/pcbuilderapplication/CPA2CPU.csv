@@ -1,8 +1,8 @@
-﻿Intel Core i9-10900K,10,20,DDR4,3.70GHz,5.30GHz,Intel 400 Series/Intel 500 Series,Gen3,LGA 1200,125,Intel UHD Graphics 630,No,499.99
-Intel Core i7-10700KF,8,16,DDR4,3.80GHz,5.10GHz,Intel 400 Series/Intel 500 Series,Gen3,LGA 1200,125,None,No,359.99
-Intel Core i5-12600K,10,16,DDR5,3.70GHz,4.90GHz,Intel 600 Series,Gen5,LGA 1700,125,None,Yes,299.99
-Intel Core i5-10400,6,12,DDR4,2.90GHz,4.30GHz,Intel 400 Series,Gen3,LGA 1200,65,Intel UHD Graphics 630,Yes,182.99
-Intel Core i5-4690,4,4,DDR3,3.50GHz,3.90GHz,Intel 300 Series,Gen3,LGA 1150,84,Intel HD Graphics 4600,Yes,224.99
+﻿Intel Core i9 10900K,10,20,DDR4,3.70GHz,5.30GHz,Intel 400 Series/Intel 500 Series,Gen3,LGA 1200,125,Intel UHD Graphics 630,No,499.99
+Intel Core i7 10700KF,8,16,DDR4,3.80GHz,5.10GHz,Intel 400 Series/Intel 500 Series,Gen3,LGA 1200,125,None,No,359.99
+Intel Core i5 12600K,10,16,DDR4/DDR5,3.70GHz,4.90GHz,Intel 600 Series,Gen5,LGA 1700,125,None,Yes,299.99
+Intel Core i5 10400,6,12,DDR4,2.90GHz,4.30GHz,Intel 400 Series,Gen3,LGA 1200,65,Intel UHD Graphics 630,Yes,182.99
+Intel Core i5 4690,4,4,DDR3,3.50GHz,3.90GHz,Intel 300 Series,Gen3,LGA 1150,84,Intel HD Graphics 4600,Yes,224.99
 AMD Ryzen 9 5900X,12,24,DDR4,3.7GHz,4.8GHz,X570/B550,Gen4,AM4,105,None,No,549.99
 AMD Ryzen 7 5800X,8,16,DDR4,3.8GHz,4.7GHz,X570/B550,Gen4,AM4,105,None,No,349.99
 AMD Ryzen 5 3600,6,12,DDR4,3.6GHz,4.2GHz,B450/B550/X470/X570,Gen4,AM4,65,None,Yes,199.99

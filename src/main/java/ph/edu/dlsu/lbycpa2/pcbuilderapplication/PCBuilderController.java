@@ -20,16 +20,15 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
+
 public class PCBuilderController implements Initializable {
-    public static String current;
-    public Stack<String> selectedParts = new Stack<>();
-    public static String[] compatibilityMotherboard = new String[8];
-    public Stack<Double> priceList = new Stack<>();
-    public static double buildTotalPrice;
+    String current;
+    Stack<String> selectedParts = new Stack<>();
+    static String[] compatibilityMotherboard = new String[8];
+    Stack<Double> priceList = new Stack<>();
+    double buildTotalPrice;
+    double tempCost = 0;
     int stage = 0;
     @FXML
     public AnchorPane startPane, programPane, endPane, auxPane;
@@ -40,13 +39,11 @@ public class PCBuilderController implements Initializable {
     @FXML
     public Label cpuPHP,mbPHP, ramPHP, casePHP, gpuPHP, psuPHP, coolerPHP, storagePHP, totalPHP;
     @FXML
-    public ListView<String> partsList;
+    private ListView<String> partsList, specsList;
     @FXML
-    private ListView<String> specsList;
+    private ImageView partImage, cpuImage,mbImage, ramImage, caseImage, gpuImage, psuImage, coolerImage, storageImage;
     @FXML
-    public ImageView partImage, cpuImage,mbImage, ramImage, caseImage, gpuImage, psuImage, coolerImage, storageImage;
-    @FXML
-    private Button prevButton;
+    private Button prevButton, nextButton;
     ArrayList<String> allCPU;
     ArrayList<String> allMobo;
     ArrayList<String> allRAM;
@@ -59,6 +56,16 @@ public class PCBuilderController implements Initializable {
     String compatibleCase;
     int compatibleQuantity;
     String iGLine;
+    String[] cpuSpecsLabel = new String[13];
+    String[] moboSpecsLabel = new String[12];
+    String[] ramSpecsLabel = new String[7];
+    String[] casesSpecsLabel = new String[6];
+    String[] gpuSpecsLabel = new String[8];
+    String[] psuSpecsLabel = new String[7];
+    String[] coolerSpecsLabel = new String[6];
+    String[] storageSpecsLabel = new String[8];
+
+    int compatibleLengthGPU = 0;
     @FXML
     private void onStartClick() throws FileNotFoundException {
         stage = 0;
@@ -69,8 +76,7 @@ public class PCBuilderController implements Initializable {
         for (String s : allCPU) {
             String[] temp = s.split(",");
             partsList.getItems().add(temp[0]);
-        }
-        costLabel.setText(String.valueOf(buildTotalPrice));
+        }costLabel.setText(String.valueOf(buildTotalPrice));
     }
 
     @FXML
@@ -146,10 +152,11 @@ public class PCBuilderController implements Initializable {
                     }catch (IOException e) {
                         // TODO: handle exception here
                     }
+
                     XWPFDocument document = new XWPFDocument();
                     XWPFParagraph paragraph = document.createParagraph();
                     XWPFRun run = paragraph.createRun();
-                    FileOutputStream fout = new FileOutputStream(new File("src/main/resources/parts.docx"));
+                    FileOutputStream fout = new FileOutputStream("src/main/resources/parts.docx");
                     File img = new File("src/main/resources/output.png");
                     FileInputStream imageData = new FileInputStream(img);
                     int imageType = XWPFDocument.PICTURE_TYPE_PNG;
@@ -234,16 +241,23 @@ public class PCBuilderController implements Initializable {
         while (s.hasNextLine()) {
             String line = s.nextLine();
             String[] chips = chipset.split("/");
+            String[] ram = typeRAM.split("/");
             if(chips.length>1){
                 for (String chip : chips) {
                     if (line.contains(typeRAM) && line.contains(typeSocket) && line.contains(chip)) {
                         listMobo.add(line);
                     }
                 }
-            }else {
-                if (line.contains(typeRAM) && line.contains(typeSocket) && line.contains(chipset)) {
-                    listMobo.add(line);
+            }
+            if(ram.length>1) {
+                for (String r : ram) {
+                    if (line.contains(typeSocket) && line.contains(r) && !listMobo.contains(line)) {
+                        listMobo.add(line);
+                    }
                 }
+            }
+            else if (line.contains(typeRAM) && line.contains(typeSocket) && line.contains(chipset)&&!listMobo.contains(line)) {
+                listMobo.add(line);
             }
         }
         return listMobo;
@@ -317,7 +331,6 @@ public class PCBuilderController implements Initializable {
         while (s.hasNextLine()) {
             String line = s.nextLine();
             String[] specs = line.split(",");
-            System.out.println(compatible);
             if(compatible.equals("Yes")){
                 if(specs[5].equals("M.2-2280")) listStorage.add(line);
             }
@@ -333,7 +346,7 @@ public class PCBuilderController implements Initializable {
         }
     }
     private void initRAM() throws FileNotFoundException {
-        allRAM = new ArrayList<>(ram(compatibilityMotherboard[0], compatibleQuantity));
+        allRAM = new ArrayList<>(ram(moboRam, compatibleQuantity));
         for (String s : allRAM) {
             String[] specs = s.split(",");
             partsList.getItems().add(specs[0]);
@@ -394,6 +407,7 @@ public class PCBuilderController implements Initializable {
         }
     }
     String m2Compatible;
+    String moboRam;
     private void getCaseAndRamCompatibility() {
         if (stage == 1) {
             String target;
@@ -402,6 +416,7 @@ public class PCBuilderController implements Initializable {
                     target = s;
                     String[] specsSelectedMobo = target.split(",");
                     compatibleCase = specsSelectedMobo[1]; // Size
+                    moboRam = specsSelectedMobo[2]; //Motherboard RAM
                     compatibleQuantity = Integer.parseInt(specsSelectedMobo[3]);// Quantity
                     m2Compatible = specsSelectedMobo[4]; //M.2
                 }
@@ -432,16 +447,6 @@ public class PCBuilderController implements Initializable {
         partsList.getItems().clear();
         specsList.getItems().clear();
     }
-    String[] cpuSpecsLabel = new String[13];
-    String[] moboSpecsLabel = new String[12];
-    String[] ramSpecsLabel = new String[7];
-    String[] casesSpecsLabel = new String[6];
-    String[] gpuSpecsLabel = new String[8];
-    String[] psuSpecsLabel = new String[7];
-    String[] coolerSpecsLabel = new String[6];
-    String[] storageSpecsLabel = new String[8];
-
-    int compatibleLengthGPU = 0;
 
     private void getGPUCompatibility() {
         if (stage == 3) {
@@ -469,7 +474,6 @@ public class PCBuilderController implements Initializable {
 
         }
     }
-
     private void setTitles() {
         cpuSpecsLabel = new String[]{"Processor:\t\t\t\t", "Actual Cores:\t\t\t\t", "Threads: \t\t\t\t\t", "Memory Type: \t\t\t", "Base Clock Frequency: \t\t", "Max Clock Frequency: \t\t", "Chipset: \t\t\t\t\t", "PCIe Generation: \t\t\t", "Socket: \t\t\t\t\t", "Total Power Draw: \t\t\t", "Integrated Graphics: \t\t", "CPU Cooler: \t\t\t\t", "Suggested Retail Price in U$: \t"};
         moboSpecsLabel = new String[]{"Motherboard:\t\t", "Size:\t\t\t\t", "Memory Type:\t\t", "RAM Slots:\t\t","M.2 Compatible:\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t", "Chipset:\t\t\t", "Supported Socket:  ", "Price in USD: \t\t"};
@@ -480,7 +484,6 @@ public class PCBuilderController implements Initializable {
         coolerSpecsLabel = new String[]{"Name:\t\t\t", "Rated RPM:\t\t", "Noise Level:\t\t", "Available Colors:\t", "Length (Radiator):\t", "Price:\t\t\t"};
         storageSpecsLabel = new String[]{"Name:\t\t", "Capacity:\t\t", "Price/GB:\t\t","Type:\t\t","Cache:\t\t", "Form Factor:\t", "Interface:\t\t", "Price:\t\t"};
     }
-
     private void setSpecsList(String selected) {
         ArrayList[] arrays = new ArrayList[]{allCPU, allMobo, allRAM, allCase, allGPU, allPSU, allCooler, allStorage};
         String[][] strings = new String[][]{cpuSpecsLabel, moboSpecsLabel, ramSpecsLabel, casesSpecsLabel, gpuSpecsLabel, psuSpecsLabel, coolerSpecsLabel, storageSpecsLabel};
@@ -493,20 +496,17 @@ public class PCBuilderController implements Initializable {
         for (int i = 0; i < specsArray.length; i++)
             specsList.getItems().add(labelArray[i] + specsArray[i]);
     }
-
-    double tempCost = 0;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         partsList.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             double t;
             current = String.valueOf(partsList.getSelectionModel().getSelectedItem());
+            setPartImage(current);
             getMotherboardCompatibility();
             getCaseAndRamCompatibility();
             getGPUCompatibility();
             getPSUCompatibility();
             setSpecsList(current);
-            setPartImage(current);
             tempCost = getComponentCost(current, stage);
             t = tempCost + buildTotalPrice;
             costLabel.setText(String.format("%.2f", t));
@@ -526,10 +526,10 @@ public class PCBuilderController implements Initializable {
         partImage.setImage(prodPic);
     }
 
-    private void setPartImage(String selected) {
-        defaultImage();
-        File img = new File("src/main/resources/assets/", selected + ".jpg");
-        Image prodPic = new Image(img.toURI().toString());
+    private void setPartImage(String selected)  {
+
+        File file = new File("src/main/resources/assets/" , selected + ".jpg");
+        Image prodPic = new Image(file.toURI().toString());
         partImage.setImage(prodPic);
     }
 }
