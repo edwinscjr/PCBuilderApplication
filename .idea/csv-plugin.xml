@@ -24,6 +24,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\target\classes\ph\edu\dlsu\lbycpa2\pcbuilderapplication\CPA2Memory.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\target\classes\ph\edu\dlsu\lbycpa2\pcbuilderapplication\CPA2Motherboard.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
