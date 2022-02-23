@@ -31,13 +31,13 @@ public class PCBuilderController implements Initializable {
     double tempCost = 0;
     int stage = 0;
     @FXML
-    public AnchorPane startPane, programPane, endPane, auxPane;
+    private AnchorPane startPane, programPane, endPane, auxPane;
     @FXML
-    public Label partLabel, costLabel, cpuLabel,mbLabel,  ramLabel, caseLabel, gpuLabel, psuLabel, coolerLabel, storageLabel;
+    private Label partLabel, costLabel, cpuLabel,mbLabel,  ramLabel, caseLabel, gpuLabel, psuLabel, coolerLabel, storageLabel;
     @FXML
-    public Label cpuPrice,mbPrice, ramPrice, casePrice, gpuPrice, psuPrice, coolerPrice, storagePrice, totalLabel;
+    private Label cpuPrice,mbPrice, ramPrice, casePrice, gpuPrice, psuPrice, coolerPrice, storagePrice, totalLabel;
     @FXML
-    public Label cpuPHP,mbPHP, ramPHP, casePHP, gpuPHP, psuPHP, coolerPHP, storagePHP, totalPHP;
+    private Label cpuPHP,mbPHP, ramPHP, casePHP, gpuPHP, psuPHP, coolerPHP, storagePHP, totalPHP, costLabelPHP;
     @FXML
     private ListView<String> partsList, specsList;
     @FXML
@@ -53,6 +53,7 @@ public class PCBuilderController implements Initializable {
     ArrayList<String> allPSU;
     ArrayList<String> allCooler;
     ArrayList<String> allStorage;
+
     String[] cpuSpecsLabel = new String[13];
     String[] moboSpecsLabel = new String[12];
     String[] ramSpecsLabel = new String[7];
@@ -61,6 +62,7 @@ public class PCBuilderController implements Initializable {
     String[] psuSpecsLabel = new String[7];
     String[] coolerSpecsLabel = new String[6];
     String[] storageSpecsLabel = new String[8];
+
     int compatibleQuantity;
     int compatibleLengthGPU = 0;
     int[] tdp = new int[]{0, 0, 150}; //CPU, GPU, Headroom
@@ -68,7 +70,7 @@ public class PCBuilderController implements Initializable {
     String m2Compatible;
     String moboRam;
     String iGLine;
-
+    private static final double rates = 51.29; // USD to PHP February 22, 2022
     @FXML
     private void onStartClick() throws FileNotFoundException {
         stage = 0;
@@ -79,7 +81,10 @@ public class PCBuilderController implements Initializable {
         for (String s : allCPU) {
             String[] temp = s.split(",");
             partsList.getItems().add(temp[0]);
-        }costLabel.setText(String.valueOf(buildTotalPrice));
+        }
+        costLabel.setText(String.format("%.2f",buildTotalPrice));
+        costLabelPHP.setText(String.format("%.2f", buildTotalPrice*rates));
+
     }
 
     @FXML
@@ -136,7 +141,7 @@ public class PCBuilderController implements Initializable {
                     Label [] costsPHPLabel = new Label[]{storagePHP,coolerPHP,psuPHP, gpuPHP, casePHP, ramPHP, mbPHP, cpuPHP};
                     ImageView[] images = new ImageView[]{storageImage, coolerImage, psuImage,gpuImage,caseImage,ramImage,mbImage,cpuImage};
                     totalLabel.setText("$"+String.format("%.2f", buildTotalPrice));
-                    totalPHP.setText("₱"+String.format("%.2f", buildTotalPrice*51.29));
+                    totalPHP.setText("₱"+String.format("%.2f", buildTotalPrice*rates));
                     while (!selectedParts.empty()){
                         double costUSD = priceList.pop();
                         String currentPart = selectedParts.pop();
@@ -145,7 +150,7 @@ public class PCBuilderController implements Initializable {
                         images[i].setImage(pic);
                         partsLabel[i].setText(currentPart);
                         costsLabel[i].setText("$"+String.format("%.2f",costUSD));
-                        costsPHPLabel[i].setText("₱"+String.format("%.2f",costUSD*51.29));
+                        costsPHPLabel[i].setText("₱"+String.format("%.2f",costUSD*rates));
                         i++;
                     }
                     WritableImage image = endPane.snapshot(new SnapshotParameters(), null);
@@ -153,7 +158,7 @@ public class PCBuilderController implements Initializable {
                     try {
                         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
                     }catch (IOException e) {
-                        // TODO: handle exception here
+                        System.out.println("Image Snapshot Unsuccessful");
                     }
 
                     XWPFDocument document = new XWPFDocument();
@@ -164,8 +169,8 @@ public class PCBuilderController implements Initializable {
                     FileInputStream imageData = new FileInputStream(img);
                     int imageType = XWPFDocument.PICTURE_TYPE_PNG;
                     String imageFileName = img.getName();
-                    int width = 450;
-                    int height = 400;
+                    int width = 624;
+                    int height = 467;
                     run.addPicture(imageData, imageType, imageFileName, Units.toEMU(width), Units.toEMU(height));
                     document.write(fout);
                     fout.close();
@@ -272,7 +277,7 @@ public class PCBuilderController implements Initializable {
         while (s.hasNextLine()) {
             String line = s.nextLine();
             String[] specs = line.split(",");
-            if (line.contains(typeRAM) && Integer.parseInt(specs[3]) <= quantity) {
+            if (line.contains(typeRAM) && (Integer.parseInt(specs[3]) <= quantity)){
                 listRAM.add(line);
             }
         }
@@ -466,11 +471,17 @@ public class PCBuilderController implements Initializable {
         }
         return partCost;
     }
-
+    private void addCosts() {
+        buildTotalPrice = buildTotalPrice + tempCost;
+        priceList.push(tempCost);
+        costLabel.setText(String.format("%.2f", buildTotalPrice));
+        costLabelPHP.setText(String.format("%.2f", buildTotalPrice*rates));
+    }
     private void subtractPrevious() {
         double sub = getComponentCost(selectedParts.pop(), stage - 1);
         buildTotalPrice = buildTotalPrice - sub;
         costLabel.setText(String.format("%.2f", buildTotalPrice));
+        costLabelPHP.setText(String.format("%.2f", buildTotalPrice*rates));
     }
 
     private void clearListViews() {
@@ -514,14 +525,8 @@ public class PCBuilderController implements Initializable {
             tempCost = getComponentCost(current, stage);
             t = tempCost + buildTotalPrice;
             costLabel.setText(String.format("%.2f", t));
-
+            costLabelPHP.setText(String.format("%.2f", t*rates));
         });
-    }
-
-    private void addCosts() {
-        buildTotalPrice = buildTotalPrice + tempCost;
-        priceList.push(tempCost);
-        costLabel.setText(String.format("%.2f", buildTotalPrice));
     }
 
     private void defaultImage() {
