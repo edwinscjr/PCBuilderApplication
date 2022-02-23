@@ -1,5 +1,4 @@
 package ph.edu.dlsu.lbycpa2.pcbuilderapplication;
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
