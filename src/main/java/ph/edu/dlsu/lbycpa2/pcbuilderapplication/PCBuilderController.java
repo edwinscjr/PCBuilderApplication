@@ -7,6 +7,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -44,6 +45,8 @@ public class PCBuilderController implements Initializable {
     private ImageView partImage, cpuImage,mbImage, ramImage, caseImage, gpuImage, psuImage, coolerImage, storageImage;
     @FXML
     private Button prevButton;
+    @FXML
+    private TextField pcNameField;
 
     ArrayList<String> allCPU;
     ArrayList<String> allMobo;
@@ -65,14 +68,19 @@ public class PCBuilderController implements Initializable {
 
     int compatibleQuantity;
     int compatibleLengthGPU = 0;
-    int[] tdp = new int[]{0, 0, 150}; //CPU, GPU, Headroom
+    int[] tdp = new int[]{0, 0, headroomTDP}; //CPU, GPU, Headroom
     String compatibleCase;
     String m2Compatible;
     String moboRam;
     String iGLine;
+    String pcName;
     private static final double rates = 51.29; // USD to PHP February 22, 2022
+    private static final int headroomTDP = 150;
     @FXML
     private void onStartClick() throws FileNotFoundException {
+        if(!pcNameField.getText().equals("")){
+            pcName = pcNameField.getText();
+        }else pcName = "defaultBuild";
         stage = 0;
         setTitles();
         startPane.setVisible(false);
@@ -164,7 +172,7 @@ public class PCBuilderController implements Initializable {
                     XWPFDocument document = new XWPFDocument();
                     XWPFParagraph paragraph = document.createParagraph();
                     XWPFRun run = paragraph.createRun();
-                    FileOutputStream fout = new FileOutputStream("src/main/resources/parts.docx");
+                    FileOutputStream fout = new FileOutputStream("src/main/resources/"+ pcName +".docx");
                     File img = new File("src/main/resources/output.png");
                     FileInputStream imageData = new FileInputStream(img);
                     int imageType = XWPFDocument.PICTURE_TYPE_PNG;
@@ -303,9 +311,9 @@ public class PCBuilderController implements Initializable {
         while (s.hasNextLine()) {
             String line = s.nextLine();
             String[] specs = line.split(",");
-            if (Integer.parseInt(specs[7]) <= maxLength) listGPU.add(line);
+            if (Integer.parseInt(specs[7]) <= maxLength) listGPU.add(line); // Consider width of case
         }
-        if(!compatibilityMotherboard[4].equals("None")) listGPU.add(iGLine);
+        if(!compatibilityMotherboard[4].equals("None")) listGPU.add(iGLine); // Include Integrated Graphics to the GPU stage
         return listGPU;
     }
     private ArrayList<String> psu(int cpuTDP, int gpuTDP, int headroomTDP) throws FileNotFoundException {
