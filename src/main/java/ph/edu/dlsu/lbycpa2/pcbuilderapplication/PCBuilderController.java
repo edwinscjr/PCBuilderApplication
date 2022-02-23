@@ -43,7 +43,8 @@ public class PCBuilderController implements Initializable {
     @FXML
     private ImageView partImage, cpuImage,mbImage, ramImage, caseImage, gpuImage, psuImage, coolerImage, storageImage;
     @FXML
-    private Button prevButton, nextButton;
+    private Button prevButton;
+
     ArrayList<String> allCPU;
     ArrayList<String> allMobo;
     ArrayList<String> allRAM;
@@ -52,10 +53,6 @@ public class PCBuilderController implements Initializable {
     ArrayList<String> allPSU;
     ArrayList<String> allCooler;
     ArrayList<String> allStorage;
-    int[] tdp = new int[]{0, 0, 150}; //CPU, GPU, Headroom
-    String compatibleCase;
-    int compatibleQuantity;
-    String iGLine;
     String[] cpuSpecsLabel = new String[13];
     String[] moboSpecsLabel = new String[12];
     String[] ramSpecsLabel = new String[7];
@@ -64,8 +61,14 @@ public class PCBuilderController implements Initializable {
     String[] psuSpecsLabel = new String[7];
     String[] coolerSpecsLabel = new String[6];
     String[] storageSpecsLabel = new String[8];
-
+    int compatibleQuantity;
     int compatibleLengthGPU = 0;
+    int[] tdp = new int[]{0, 0, 150}; //CPU, GPU, Headroom
+    String compatibleCase;
+    String m2Compatible;
+    String moboRam;
+    String iGLine;
+
     @FXML
     private void onStartClick() throws FileNotFoundException {
         stage = 0;
@@ -387,6 +390,7 @@ public class PCBuilderController implements Initializable {
             partsList.getItems().add(specs[0]);
         }
     }
+    //Compatibility Methods
     private void getMotherboardCompatibility() {
         if (stage == 0) {
             String target;
@@ -406,8 +410,7 @@ public class PCBuilderController implements Initializable {
             }
         }
     }
-    String m2Compatible;
-    String moboRam;
+
     private void getCaseAndRamCompatibility() {
         if (stage == 1) {
             String target;
@@ -418,34 +421,10 @@ public class PCBuilderController implements Initializable {
                     compatibleCase = specsSelectedMobo[1]; // Size
                     moboRam = specsSelectedMobo[2]; //Motherboard RAM
                     compatibleQuantity = Integer.parseInt(specsSelectedMobo[3]);// Quantity
-                    m2Compatible = specsSelectedMobo[4]; //M.2
+                    m2Compatible = specsSelectedMobo[4]; //M.2 y/n
                 }
             }
         }
-    }
-
-    private double getComponentCost(String selected, int Stage) {
-        double partCost = 0;
-        ArrayList[] arrays = new ArrayList[]{allCPU, allMobo, allRAM, allCase, allGPU, allPSU, allCooler, allStorage};
-        for (int i = 0; i < arrays[Stage].size(); i++) {
-            String[] specs = String.valueOf(arrays[Stage].get(i)).split(",");
-            if (specs[0].equals(selected)) {
-                partCost = Double.parseDouble(specs[(specs.length - 1)]);
-                break;
-            }
-        }
-        return partCost;
-    }
-
-    private void subtractPrevious() {
-        double sub = getComponentCost(selectedParts.pop(), stage - 1);
-        buildTotalPrice = buildTotalPrice - sub;
-        costLabel.setText(String.format("%.2f", buildTotalPrice));
-
-    }
-    private void clearListViews() {
-        partsList.getItems().clear();
-        specsList.getItems().clear();
     }
 
     private void getGPUCompatibility() {
@@ -474,6 +453,31 @@ public class PCBuilderController implements Initializable {
 
         }
     }
+
+    private double getComponentCost(String selected, int Stage) {
+        double partCost = 0;
+        ArrayList[] arrays = new ArrayList[]{allCPU, allMobo, allRAM, allCase, allGPU, allPSU, allCooler, allStorage};
+        for (int i = 0; i < arrays[Stage].size(); i++) {
+            String[] specs = String.valueOf(arrays[Stage].get(i)).split(",");
+            if (specs[0].equals(selected)) {
+                partCost = Double.parseDouble(specs[(specs.length - 1)]);
+                break;
+            }
+        }
+        return partCost;
+    }
+
+    private void subtractPrevious() {
+        double sub = getComponentCost(selectedParts.pop(), stage - 1);
+        buildTotalPrice = buildTotalPrice - sub;
+        costLabel.setText(String.format("%.2f", buildTotalPrice));
+    }
+
+    private void clearListViews() {
+        partsList.getItems().clear();
+        specsList.getItems().clear();
+    }
+
     private void setTitles() {
         cpuSpecsLabel = new String[]{"Processor:\t\t\t\t", "Actual Cores:\t\t\t\t", "Threads: \t\t\t\t\t", "Memory Type: \t\t\t", "Base Clock Frequency: \t\t", "Max Clock Frequency: \t\t", "Chipset: \t\t\t\t\t", "PCIe Generation: \t\t\t", "Socket: \t\t\t\t\t", "Total Power Draw: \t\t\t", "Integrated Graphics: \t\t", "CPU Cooler: \t\t\t\t", "Suggested Retail Price in U$: \t"};
         moboSpecsLabel = new String[]{"Motherboard:\t\t", "Size:\t\t\t\t", "Memory Type:\t\t", "RAM Slots:\t\t","M.2 Compatible:\t", "PCIe Gen: \t\t", "PCI-E x16 Slots: \t", "PCI-E x8 Slots: \t\t", "PCI-E x4 Slots: \t\t", "PCI-E x1 Slots: \t\t", "LAN: \t\t\t", "Chipset:\t\t\t", "Supported Socket:  ", "Price in USD: \t\t"};
@@ -527,7 +531,6 @@ public class PCBuilderController implements Initializable {
     }
 
     private void setPartImage(String selected)  {
-
         File file = new File("src/main/resources/assets/" , selected + ".jpg");
         Image prodPic = new Image(file.toURI().toString());
         partImage.setImage(prodPic);
