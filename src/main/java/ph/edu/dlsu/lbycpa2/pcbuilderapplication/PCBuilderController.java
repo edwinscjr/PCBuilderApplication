@@ -177,8 +177,8 @@ public class PCBuilderController implements Initializable {
                     FileInputStream imageData = new FileInputStream(img);
                     int imageType = XWPFDocument.PICTURE_TYPE_PNG;
                     String imageFileName = img.getName();
-                    int width = 624;
-                    int height = 467;
+                    int width = 464;
+                    int height = 348;
                     run.addPicture(imageData, imageType, imageFileName, Units.toEMU(width), Units.toEMU(height));
                     document.write(fout);
                     fout.close();
